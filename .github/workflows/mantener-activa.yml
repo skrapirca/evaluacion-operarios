@@ -44,6 +44,7 @@ jobs:
                   print("La app estaba dormida: despertándola…")
                   pg.wait_for_timeout(90_000)
               else:
-                  print("La app está activa.")
+                  texto = pg.inner_text("body")[:200].replace("\n", " ")
+                  print(f"Título: {pg.title()!r} · Texto: {texto!r}")
               b.close()
           PY
