@@ -5,15 +5,33 @@ Nunca lanza excepciones hacia las páginas: siempre devuelve un `Resultado`.
 from __future__ import annotations
 
 import os
+import sys
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any
 
 import requests
 import streamlit as st
 
-API_URL = os.environ.get("API_URL", "http://localhost:8000").rstrip("/")
+# Modo "http": el backend corre aparte (python run.py lo arranca y define API_URL).
+# Modo "embebido": si no hay API_URL (p. ej. en Streamlit Community Cloud), la misma API
+# FastAPI se ejecuta dentro de este proceso. Los endpoints, validaciones y errores son los mismos.
+API_URL = os.environ.get("API_URL", "").rstrip("/")
+MODO_EMBEBIDO = not API_URL
 TIMEOUT_SEGUNDOS = 10
 CACHE_TTL_SEGUNDOS = 60
+
+
+@st.cache_resource
+def _cliente_embebido():
+    raiz = str(Path(__file__).resolve().parent.parent)
+    if raiz not in sys.path:
+        sys.path.insert(0, raiz)
+    from fastapi.testclient import TestClient
+
+    from backend.main import app
+
+    return TestClient(app, raise_server_exceptions=False)
 
 
 @dataclass
@@ -31,8 +49,11 @@ class _ErrorHttp(Exception):
 
 
 def _http_get(path: str, params: dict) -> tuple[int, Any]:
-    """Petición HTTP real. En los tests se sustituye por un doble."""
-    r = requests.get(f"{API_URL}{path}", params=params, timeout=TIMEOUT_SEGUNDOS)
+    """Petición a la API (HTTP o embebida). En los tests se sustituye por un doble."""
+    if MODO_EMBEBIDO:
+        r = _cliente_embebido().get(path, params=params)
+    else:
+        r = requests.get(f"{API_URL}{path}", params=params, timeout=TIMEOUT_SEGUNDOS)
     try:
         body = r.json()
     except ValueError:

@@ -54,6 +54,15 @@ Para detenerla, pulsa `Ctrl + C` en la terminal.
 pytest
 ```
 
+### Publicarla online (Streamlit Community Cloud, gratis)
+1. Entra en https://share.streamlit.io e inicia sesión con tu cuenta de GitHub.
+2. Pulsa **Create app** → **Deploy a public app from GitHub**.
+3. Rellena: **Repository** `skrapirca/evaluacion-operarios` · **Branch** `main` · **Main file path** `frontend/app.py`.
+   En **App URL** puedes elegir el nombre del enlace (por ejemplo `evaluacion-operarios`).
+4. En **Advanced settings**, elige Python 3.12 y pulsa **Deploy**.
+
+En la nube no hay un backend aparte: si no existe la variable `API_URL`, el frontend ejecuta la misma API FastAPI dentro de su propio proceso (modo embebido). En local, `python run.py` arranca los dos por separado.
+
 ---
 
 ## 2. Qué hace la aplicación
@@ -167,14 +176,14 @@ run.py               Arranque de backend + frontend
 
 ## 7. Tests
 
-`pytest` ejecuta 85 tests:
+`pytest` ejecuta 86 tests:
 
 | Archivo | Qué prueba |
 |---|---|
 | `test_unitarios.py` | Conversión horas → días, promedios, colores, estrellas, ranking, % de ausentismo, avatares y colores de comparación |
 | `test_bd.py` | Integridad de la BBDD de demo (claves, rangos, conversiones, restricciones, número de filas) |
 | `test_api.py` | Todos los endpoints y errores (fechas, tamaños, turnos, 404, 500, inyección SQL) |
-| `test_frontend.py` | Pantallas con AppTest: buscador, validaciones, tooltips, errores 500, backend caído, "Empleado no encontrado", colores y flujos completos |
+| `test_frontend.py` | Pantallas con AppTest: buscador, validaciones, tooltips, errores 500, backend caído, "Empleado no encontrado", colores, flujos completos y modo embebido |
 
 Los tests usan una BBDD propia con datos fijos (`tests/conftest.py`), independiente de la de demo. GitHub Actions los ejecuta en cada push (`.github/workflows/tests.yml`).
 
@@ -184,7 +193,7 @@ Los tests usan una BBDD propia con datos fijos (`tests/conftest.py`), independie
 
 | Variable | Por defecto | Uso |
 |---|---|---|
-| `API_URL` | `http://localhost:8000` | URL del backend que usa el frontend |
+| `API_URL` | (vacía) | URL del backend. `run.py` la define; si no existe, la API se ejecuta dentro del frontend (modo embebido, usado en Streamlit Cloud) |
 | `API_PORT` | `8000` | Puerto del backend |
 | `FRONTEND_PORT` | `8501` | Puerto del frontend |
 | `DB_PATH` | `data/evaluaciones.db` | Ruta de la base de datos |

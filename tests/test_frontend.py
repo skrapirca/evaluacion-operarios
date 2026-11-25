@@ -206,3 +206,15 @@ def test_inicio(api_real):
     at = abrir("inicio")
     sin_excepciones(at)
     assert {"Entrar →"} == {p.proto.label for p in at.get("page_link")}
+
+
+def test_modo_embebido_sin_backend_aparte(ruta_bd_test, monkeypatch):
+    """Sin API_URL (Streamlit Community Cloud) la API se ejecuta dentro del mismo proceso."""
+    monkeypatch.setenv("DB_PATH", str(ruta_bd_test))
+    monkeypatch.setattr(api_client, "MODO_EMBEBIDO", True)
+    api_client.limpiar_cache()
+    res = api_client.listar_empleados()
+    assert res.ok and len(res.data) == 5
+    res = api_client.performance(99999, "2026-01-01", "2026-12-31")
+    assert not res.ok and res.code == "EMPLOYEE_NOT_FOUND"
+    api_client.limpiar_cache()
