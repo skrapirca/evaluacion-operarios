@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-label="Avatar femenino">
+  <circle cx="60" cy="60" r="60" fill="#EFE8DE"/>
+  <path d="M34 50c0-20 11-29 26-29s26 9 26 29v34c-6 4-14 5-26 5s-20-1-26-5z" fill="#5A3A28"/>
+  <path d="M22 112c4-22 20-32 38-32s34 10 38 32a60 60 0 0 1-76 0z" fill="#B9A58C"/>
+  <path d="M52 72h16v12a8 8 0 0 1-16 0z" fill="#E2B992"/>
+  <ellipse cx="60" cy="53" rx="19" ry="22" fill="#EAC39D"/>
+  <path d="M40 50c2-14 10-21 21-21 10 0 18 6 20 19-9-2-18-7-22-13-4 7-10 12-19 15z" fill="#5A3A28"/>
+  <circle cx="52" cy="56" r="2.2" fill="#2B2B2B"/><circle cx="68" cy="56" r="2.2" fill="#2B2B2B"/>
+  <path d="M54 66c3.5 3 8.5 3 12 0" stroke="#B5544A" stroke-width="2" fill="none" stroke-linecap="round"/>
+</svg>

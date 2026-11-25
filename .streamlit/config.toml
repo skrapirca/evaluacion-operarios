@@ -1,0 +1,29 @@
+# Tema inspirado en una estética de moda minimalista (blanco, negro y tonos arena).
+[theme]
+base = "light"
+primaryColor = "#111111"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F5F1EB"
+textColor = "#111111"
+linkColor = "#111111"
+borderColor = "#E4DED5"
+font = "'Helvetica Neue', Helvetica, Arial, sans-serif"
+headingFont = "'Helvetica Neue', Helvetica, Arial, sans-serif"
+headingFontWeights = 400
+baseRadius = "none"
+buttonRadius = "none"
+showWidgetBorder = true
+redColor = "#B3261E"
+greenColor = "#2E7D32"
+yellowColor = "#C9A227"
+
+[client]
+showErrorDetails = "none"
+toolbarMode = "minimal"
+
+[server]
+headless = true
+port = 8501
+
+[browser]
+gatherUsageStats = false

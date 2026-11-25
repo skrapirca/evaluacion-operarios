@@ -1,0 +1,8 @@
+# Versiones probadas: fastapi 0.165 · uvicorn 0.54 · streamlit 1.67 · pandas 3.0 · pytest 9.1
+fastapi>=0.115,<1
+uvicorn>=0.30
+streamlit>=1.67,<2
+pandas>=2.2
+requests>=2.32
+httpx>=0.27
+pytest>=8
