@@ -1,0 +1,49 @@
+# Mantiene despierta la app de Streamlit Community Cloud (se duerme tras ~12 h sin visitas).
+# Visita la app cada 4 horas y, si está dormida, pulsa el botón para despertarla.
+# Se desactiva sola a partir del 29/11/2026. Para cambiar la fecha, edita FIN.
+name: Mantener app activa
+
+on:
+  schedule:
+    - cron: "17 */4 * * *"
+  workflow_dispatch:
+
+env:
+  APP_URL: ${{ vars.APP_URL || 'https://evaluacion-operarios.streamlit.app' }}
+  FIN: "2026-11-29"
+
+jobs:
+  despertar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comprobar fecha límite
+        id: fecha
+        run: |
+          if [[ "$(date -u +%F)" > "$FIN" ]]; then echo "activo=no" >> "$GITHUB_OUTPUT"; else echo "activo=si" >> "$GITHUB_OUTPUT"; fi
+      - uses: actions/setup-python@v5
+        if: steps.fecha.outputs.activo == 'si'
+        with:
+          python-version: "3.12"
+      - name: Visitar la app y despertarla si está dormida
+        if: steps.fecha.outputs.activo == 'si'
+        continue-on-error: true
+        run: |
+          pip install -q playwright && python -m playwright install --with-deps chromium > /dev/null
+          python - <<'PY'
+          import os
+          from playwright.sync_api import sync_playwright
+          url = os.environ["APP_URL"]
+          with sync_playwright() as p:
+              b = p.chromium.launch()
+              pg = b.new_page()
+              pg.goto(url, timeout=120_000)
+              pg.wait_for_timeout(15_000)
+              boton = pg.get_by_role("button", name="Yes, get this app back up!")
+              if boton.count():
+                  boton.first.click()
+                  print("La app estaba dormida: despertándola…")
+                  pg.wait_for_timeout(90_000)
+              else:
+                  print("La app está activa.")
+              b.close()
+          PY
